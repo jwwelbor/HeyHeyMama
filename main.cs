@@ -33,14 +33,15 @@ namespace SpotifyPlaylistRandomizer
                     TokenType = token.TokenType
                 };
 
-                var playlistId = "your_playlist_id";
-                var playlist = await api.GetPlaylistTracks(playlistId);
+                var playlists = await api.GetUserPlaylists(api.GetPrivateProfile().Id);
+                var randomPlaylist = playlists.Items[new Random().Next(playlists.Items.Count)];
+                var playlist = await api.GetPlaylistTracks(randomPlaylist.Id);
 
                 var random = new Random();
                 var randomizedTracks = playlist.Tracks.Items.OrderBy(x => random.Next());
 
                 await api.ReorderPlaylistTracks(
-                    playlistId,
+                    playlist.Id,
                     new ReorderPlaylistTracksRequest()
                     {
                         RangeStart = 0,
